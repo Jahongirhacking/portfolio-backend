@@ -30,4 +30,5 @@ export const errorHandler = (
 
   // Generic error response
   res.status(500).json({ error: "An unknown error occurred" });
+  next();
 };
