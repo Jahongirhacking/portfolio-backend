@@ -71,6 +71,7 @@ const Navbar = () => {
             <Menu
                 items={navbarItems}
                 mode='inline'
+                defaultOpenKeys={['category']}
             />
         </Flex>
     )

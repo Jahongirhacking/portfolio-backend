@@ -5,16 +5,21 @@
 
   .navbar {
     width: 300px;
+    background: #ccc;
   }
 
   .admin-main {
     width: 100%;
     min-height: 100dvh;
     max-height: 100dvh;
-    padding: 10px;
+
+    & > * {
+      padding: 10px;
+    }
 
     .admin-header {
       height: 40px;
+      background: #eee;
     }
 
     .admin-content {
