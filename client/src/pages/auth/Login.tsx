@@ -1,13 +1,43 @@
-import { Button, Card, Flex, Form, Input } from "antd";
+import { Button, Card, Flex, Form, Input, message } from "antd";
 import './style.scss';
+import axios from "axios";
+import { API_BASE_URL } from "../../utils/config";
+import { localStorageNames, setLocalStorage } from "../../utils/storageUtils";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { setAuthenticated } from "../../store/slices/adminSlice";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const ADMIN_URL = '/admin/categories';
+    const isAuthenticated = useSelector((store: RootState) => store.admin.isAuthenticated)
+
+    const handleSubmit = async ({ username, password }: { username: string, password: string }) => {
+        try {
+            const { data: { token } } = await axios.post(`${API_BASE_URL}/auth/signin`, { username, password });
+            if (token) {
+                setLocalStorage(localStorageNames.token, token);
+                dispatch(setAuthenticated(true));
+                navigate(ADMIN_URL);
+                message.success("Muvaffaqiyatli kirildi")
+            }
+        } catch (err) {
+            console.log(err);
+            message.error('Login yoki parol xato')
+        }
+    }
+
+    if (isAuthenticated) return <Navigate to={ADMIN_URL} />
+
     return (
         <Flex className="login-page" vertical>
             <Form
                 className="login-form"
                 name="loginForm"
                 layout='vertical'
+                onFinish={handleSubmit}
             >
                 <Card title='Admin paneli'>
                     <Flex className="form-item__container" vertical align="center">

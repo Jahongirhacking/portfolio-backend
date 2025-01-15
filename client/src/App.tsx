@@ -3,9 +3,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 import publicRoutes from './router/publicRoutes';
 import privateRoutes from './router/privateRoutes';
 import './style.scss'
+import { useSelector } from 'react-redux';
+import { RootState } from './store/store';
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Replace with your auth logic
+  const isAuthenticated = useSelector((store: RootState) => store.admin.isAuthenticated); // Replace with your auth logic
 
   return (
     <Router>
