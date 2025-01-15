@@ -67,6 +67,7 @@ authRouter.post(
           JWT_SECRET
         ),
       });
+      return;
     }
     res.status(400).json({ error: "login or password is incorrect" });
   }
