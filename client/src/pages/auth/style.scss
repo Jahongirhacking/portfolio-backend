@@ -1,0 +1,16 @@
+.login-page {
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background-color: rgb(51, 51, 51);
+
+  .login-form {
+    width: min(300px, calc(100% - 20px));
+
+    .form-item__container {
+      & > * {
+        width: 100%;
+      }
+    }
+  }
+}
