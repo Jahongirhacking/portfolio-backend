@@ -1,0 +1,28 @@
+.admin-layout {
+  min-height: 100dvh;
+  max-height: 100dvh;
+  width: 100%;
+
+  .navbar {
+    width: 300px;
+  }
+
+  .admin-main {
+    width: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    padding: 10px;
+
+    .admin-header {
+      height: 40px;
+    }
+
+    .admin-content {
+      height: 100%;
+    }
+
+    .admin-footer {
+      height: 40px;
+    }
+  }
+}
