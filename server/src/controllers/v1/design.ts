@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
+import mongoose, { Document } from "mongoose";
 import { Category, ICategory } from "../../models/category";
 import { Item, ItemProps } from "../../models/item";
-import mongoose from "mongoose";
 import { isAuthenticated } from "../../utils/auth";
 import { extractToken } from "../../utils/middleware";
 
-interface IDbCategory extends ICategory, mongoose.Document {}
-
 const designRouter = express.Router();
+
+interface IDbCategory extends Document, ICategory {}
 
 designRouter.get("/categories", async (req: Request, res: Response) => {
   const categories = await Category.find({}).populate("categories");
@@ -30,7 +30,12 @@ designRouter.post(
       return;
     }
     const { name, img, categories, items } = req.body;
-    await new Category({ name, img, categories, items }).save();
+    await new Category({
+      name: name.split(" ").join("_").toLowerCase(),
+      img,
+      categories,
+      items,
+    }).save();
     res.status(204).json({ message: "success" });
   }
 );
@@ -64,7 +69,7 @@ designRouter.get("/:key/categories", async (req: Request, res: Response) => {
     res.status(404).json({ error: "no such category found" });
     return;
   }
-  const currentCategory = (await temp?.populate("categories")) as IDbCategory;
+  const currentCategory = await temp?.populate("categories");
   const result = id
     ? currentCategory.categories.find((c) => String(c._id) === id)
     : currentCategory.categories;
@@ -82,7 +87,7 @@ designRouter.get("/:key/items", async (req: Request, res: Response) => {
     res.status(404).json({ error: "no such category found" });
     return;
   }
-  res.status(200).json((await temp?.populate("categories")).items);
+  res.status(200).json((await temp.populate("items")).items);
 });
 
 designRouter.post(
@@ -93,9 +98,9 @@ designRouter.post(
       return;
     }
     const { key } = req.params;
-    const currentCategory = (await Category.findOne({
+    const currentCategory = await Category.findOne({
       name: key,
-    })) as IDbCategory;
+    });
     if (!currentCategory) {
       res.status(404).json({ error: "no such category found" });
       return;
@@ -103,6 +108,7 @@ designRouter.post(
 
     const category = await new Category({
       ...req.body,
+      name: req.body.name.split(" ").join("_").toLowerCase(),
       parent: currentCategory._id,
     }).save();
 
@@ -123,12 +129,12 @@ designRouter.delete(
       return;
     }
     const { category1, category2 } = req.params;
-    const currentCategory = (await Category.findOne({
+    const currentCategory = await Category.findOne({
       name: category2,
-    })) as IDbCategory;
-    const parentCategory = (await Category.findOne({
+    });
+    const parentCategory = await Category.findOne({
       name: category1,
-    })) as IDbCategory;
+    });
 
     if (
       !currentCategory ||
@@ -153,12 +159,12 @@ designRouter.get(
     res: Response
   ) => {
     const { category1, category2 } = req.params;
-    const currentCategory = (await Category.findOne({
+    const currentCategory = await Category.findOne({
       name: category2,
-    })) as IDbCategory;
-    const parentCategory = (await Category.findOne({
+    });
+    const parentCategory = await Category.findOne({
       name: category1,
-    })) as IDbCategory;
+    });
 
     if (
       !currentCategory ||
@@ -183,12 +189,12 @@ designRouter.post(
       return;
     }
     const { category1, category2 } = req.params;
-    const currentCategory = (await Category.findOne({
+    const currentCategory = await Category.findOne({
       name: category2,
-    })) as IDbCategory;
-    const parentCategory = (await Category.findOne({
+    });
+    const parentCategory = await Category.findOne({
       name: category1,
-    })) as IDbCategory;
+    });
 
     if (
       !currentCategory ||
@@ -199,13 +205,31 @@ designRouter.post(
       return;
     }
 
+    const existedItem = req.body.id && (await Item.findById(req.body?.id));
+
+    if (existedItem) {
+      existedItem.title = req.body.title;
+      existedItem.img = req.body.img;
+      existedItem.rating = req.body.rating;
+      existedItem.info = req.body.info;
+      existedItem.links = req.body.links;
+      await existedItem.save();
+      res.status(200).send({ message: "successfully updated" });
+      return;
+    }
+
     const item = await new Item({
       ...req.body,
       category: currentCategory._id,
     }).save();
     currentCategory.items = [...currentCategory.items, item._id];
-    parentCategory.items = [...parentCategory.items, item._id];
-    await Promise.all([currentCategory.save(), parentCategory.save()]);
+    if (parentCategory) {
+      parentCategory.items = [...parentCategory.items, item._id];
+    }
+    await Promise.all([
+      currentCategory.save(),
+      parentCategory && parentCategory.save(),
+    ]);
 
     // Respond with the created item
     res.status(201).json({ message: "Item created successfully", item });
