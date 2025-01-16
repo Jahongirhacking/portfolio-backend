@@ -6,3 +6,12 @@ export interface ICategory {
   parent: string;
   id: string;
 }
+
+export interface ItemProps {
+  title: string;
+  img: string;
+  category: ICategory;
+  info: { img: string; description: string }[];
+  links: string[];
+  id: string;
+}

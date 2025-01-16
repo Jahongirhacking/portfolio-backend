@@ -1,10 +1,11 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Divider, Flex, Form, Image, Input, message, Result, Typography } from "antd";
+import { Button, Divider, Flex, Form, Image, Input, message, Typography } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import NotFound from "../../../../components/NotFound";
 import { fetchCategories } from "../../../../store/slices/categorySlice";
 import { AppDispatch, RootState } from "../../../../store/store";
 import { API_MAIN_URL } from "../../../../utils/config";
@@ -39,12 +40,7 @@ const AddSubCategory = () => {
     }
 
     if (!categories.find(c => c.name === category)) return (
-        <Result
-            status="404"
-            title="404"
-            subTitle="Kechirasiz kategoriya topilmadi"
-            extra={<Link to={'/admin/categories'}>Orqaga</Link>}
-        />
+        <NotFound subTitle="Kechirasiz kategoriya topilmadi" />
     )
 
     return (

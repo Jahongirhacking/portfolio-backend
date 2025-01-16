@@ -26,15 +26,15 @@ const Navbar = () => {
                 ...categories.map(c => ({
                     key: c.id,
                     label: c.name.toUpperCase(),
-                    icon: <img src={c.img} width={40} />,
+                    icon: <img src={c.img} width={50} onClick={() => { navigate(`/admin/view/${c.name}`) }} />,
                     children: [
                         ...c.categories.map(sc => ({
                             key: sc.id,
                             label: sc.name.toUpperCase(),
-                            icon: <img src={sc.img} width={40} />
+                            icon: <img src={sc.img} width={50} onClick={() => { navigate(`/admin/view/${c.name}/${sc.name}`) }} />
                         })),
                         {
-                            key: 'btn1',
+                            key: `add-btn-${c.id}`,
                             label: (
                                 <Button
                                     type='link'
@@ -50,7 +50,7 @@ const Navbar = () => {
                     ]
                 })),
                 {
-                    key: 'btn2',
+                    key: 'add-btn',
                     label: (
                         <Button
                             type='link'
