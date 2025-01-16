@@ -20,7 +20,7 @@ mongoose
 app.use(express.json());
 app.use(cors());
 
-app.use(express.static("dist"));
+app.use(express.static("view"));
 
 app.use("/api/v1", mainRouter);
 app.use("/api/auth", authRouter);
