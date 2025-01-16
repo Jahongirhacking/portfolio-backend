@@ -22,6 +22,7 @@ const itemSchema = new mongoose.Schema<ItemProps>({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
     required: true,
   },
   info: [{ img: String, description: String }],
