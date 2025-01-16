@@ -1,13 +1,13 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Divider, Flex, Form, Image, Input, message, Typography } from "antd"
-import { useForm } from "antd/es/form/Form"
+import { Button, Divider, Flex, Form, Input, message, Typography } from "antd";
+import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { useState } from "react";
-import { API_MAIN_URL } from "../../../../utils/config";
-import { AppDispatch } from "../../../../store/store";
 import { useDispatch } from "react-redux";
+import AddImageUrl from "../../../../components/AddImageUrl";
 import { fetchCategories } from "../../../../store/slices/categorySlice";
-import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils";
+import { AppDispatch } from "../../../../store/store";
+import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
 
 const AddCategory = () => {
     const [form] = useForm();
@@ -21,11 +21,7 @@ const AddCategory = () => {
 
     const handleAddCategory = async (values: { name: string }) => {
         try {
-            await axios.post(`${API_MAIN_URL}/categories`, { ...values, img }, {
-                headers: {
-                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`
-                }
-            });
+            await axios.post(`${API_MAIN_URL}/categories`, { ...values, img }, AUTHORIZATION_HEADER);
             dispatch(fetchCategories());
             message.success("Muvaffaqiyatli qo'shildi");
             clearInputs();
@@ -57,15 +53,7 @@ const AddCategory = () => {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
-                    label={'Kategoriya rasmi url'}
-                    rules={[
-                        { required: true, message: 'url kiriting' }
-                    ]}
-                >
-                    <Input value={img} onChange={({ target: { value } }) => setImg(value)} />
-                </Form.Item>
-                <Image fallback="https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482953.jpg" width={100} src={img} alt="Kategoriya rasmi" />
+                <AddImageUrl label="Kategoriya rasm url" img={img} setImg={setImg} />
             </Form>
         </Flex>
     )

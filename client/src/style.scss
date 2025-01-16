@@ -3,3 +3,18 @@
   padding: 0;
   margin: 0;
 }
+
+.info-form-item {
+  background-color: #00e0d556;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.ant-image:has(.added-img) {
+  width: 80px;
+  margin-top: 10px;
+
+  .added-img {
+    border-radius: 50%;
+  }
+}

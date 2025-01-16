@@ -34,10 +34,19 @@ const ViewCategory = () => {
                 <Typography.Title level={2}>{category?.toUpperCase()}</Typography.Title>
             </Flex>
             <Divider>Subkategoriyalar</Divider>
+            <Button
+                type="primary"
+                className="add-item-btn"
+                onClick={() => { navigate(`/admin/add/${category}/subcategory`) }}
+                style={{ width: 'auto', margin: 'auto' }}
+            >
+                <PlusCircleOutlined /> Subkategoriya Qo'shish
+            </Button>
             <Flex gap={8} wrap>
                 {
                     currentCategory.categories.map((sc) => (
                         <CategoryCard
+                            key={sc.id}
                             category={sc}
                             onClick={() => { navigate(`./${sc.name}`) }}
                         />
@@ -60,7 +69,7 @@ const ViewCategory = () => {
                             <ItemCard
                                 key={it.title}
                                 item={it}
-                                onClick={() => { navigate(`/admin/view/${category}/${it?.category?.name}/${it.id}`) }}
+                                onClick={() => { navigate(`/admin/view/items/${it.id}`) }}
                             />
                         ))
                     }

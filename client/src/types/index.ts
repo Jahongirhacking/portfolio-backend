@@ -11,7 +11,12 @@ export interface ItemProps {
   title: string;
   img: string;
   category: ICategory;
-  info: { img: string; description: string }[];
+  info: InfoProps[];
   links: string[];
   id: string;
+}
+
+export interface InfoProps {
+  img: string;
+  description: string;
 }

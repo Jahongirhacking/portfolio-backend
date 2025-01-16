@@ -12,8 +12,11 @@
     width: 100%;
     min-height: 100dvh;
     max-height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 50px;
 
-    & > * {
+    & > .ant-flex > * {
       padding: 10px;
     }
 
@@ -53,6 +56,14 @@
   }
 
   .category-card {
+    cursor: pointer;
+
+    .ant-card-body {
+      padding: 8px 5px;
+    }
+  }
+
+  .item-card {
     cursor: pointer;
 
     .ant-card-body {

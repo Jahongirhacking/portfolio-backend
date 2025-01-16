@@ -1,15 +1,15 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Divider, Flex, Form, Image, Input, message, Typography } from "antd";
+import { Button, Divider, Flex, Form, Input, message, Typography } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import AddImageUrl from "../../../../components/AddImageUrl";
 import NotFound from "../../../../components/NotFound";
 import { fetchCategories } from "../../../../store/slices/categorySlice";
 import { AppDispatch, RootState } from "../../../../store/store";
-import { API_MAIN_URL } from "../../../../utils/config";
-import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils";
+import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
 
 const AddSubCategory = () => {
     const { category } = useParams();
@@ -25,11 +25,7 @@ const AddSubCategory = () => {
 
     const handleAddCategory = async (values: { name: string }) => {
         try {
-            await axios.post(`${API_MAIN_URL}/${category}/categories`, { ...values, img }, {
-                headers: {
-                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`
-                }
-            });
+            await axios.post(`${API_MAIN_URL}/${category}/categories`, { ...values, img }, AUTHORIZATION_HEADER);
             dispatch(fetchCategories());
             message.success("Muvaffaqiyatli qo'shildi");
             clearInputs();
@@ -66,15 +62,7 @@ const AddSubCategory = () => {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
-                    label={'Subkategoriya rasmi url'}
-                    rules={[
-                        { required: true, message: 'url kiriting' }
-                    ]}
-                >
-                    <Input value={img} onChange={({ target: { value } }) => setImg(value)} />
-                </Form.Item>
-                <Image fallback="https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482953.jpg" width={100} src={img} alt="Kategoriya rasmi" />
+                <AddImageUrl label="Subkategoriya rasm url" img={img} setImg={setImg} />
             </Form>
         </Flex>
     )
