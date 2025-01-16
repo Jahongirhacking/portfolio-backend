@@ -18,3 +18,48 @@
     border-radius: 50%;
   }
 }
+
+.banner {
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+
+  .ant-typography {
+    width: auto;
+    margin: auto;
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    background-color: #00000044;
+    color: #fff;
+  }
+}
+
+.category-card {
+  cursor: default;
+
+  .banner {
+    cursor: pointer;
+  }
+
+  .ant-card-body {
+    padding: 8px 5px;
+  }
+}
+
+.item-card {
+  cursor: pointer;
+
+  .ant-card-body {
+    padding: 8px 5px;
+  }
+}
+
+.ant-card-actions {
+  & > li {
+    margin: 5px 0 !important;
+  }
+}

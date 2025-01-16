@@ -48,7 +48,7 @@ const ViewCategory = () => {
                         <CategoryCard
                             key={sc.id}
                             category={sc}
-                            onClick={() => { navigate(`./${sc.name}`) }}
+                            onView={() => { navigate(`./${sc.name}`) }}
                         />
                     ))
                 }
@@ -69,7 +69,7 @@ const ViewCategory = () => {
                             <ItemCard
                                 key={it.title}
                                 item={it}
-                                onClick={() => { navigate(`/admin/view/items/${it.id}`) }}
+                                onView={() => { navigate(`/admin/view/items/${it.id}`) }}
                             />
                         ))
                     }

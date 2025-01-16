@@ -60,7 +60,7 @@ const AddSubCategory = () => {
                         { required: true, message: 'nom kiriting' }
                     ]}
                 >
-                    <Input />
+                    <Input autoComplete="off" />
                 </Form.Item>
                 <AddImageUrl label="Subkategoriya rasm url" img={img} setImg={setImg} />
             </Form>

@@ -219,6 +219,64 @@ designRouter.get("/items", async (req: Request, res: Response) => {
   res.status(200).json(items);
 });
 
+designRouter.get(
+  "/items/:id",
+  async (req: Request<{ id: string }>, res: Response) => {
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      res.status(404).json({ error: "item not found" });
+      return;
+    }
+    res
+      .status(200)
+      .json(await item?.populate({ path: "category", select: "name" }));
+  }
+);
+
+designRouter.post(
+  "/items/:id",
+  async (req: Request<{ id: string }, {}, ItemProps>, res: Response) => {
+    if (!(await isAuthenticated(extractToken(req)))) {
+      res.status(400).json({ error: "invalid token" });
+      return;
+    }
+
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      res.status(404).json({ error: "item not found" });
+      return;
+    }
+
+    let category = await Category.findOne({ name: req.body.category });
+    let temp = await Category.findById(item.category);
+    if (!category?._id.equals(item.category)) {
+      if (category) {
+        item.category = category?._id;
+        await item.save();
+      }
+      // add to all categories
+      while (category) {
+        category.items = [...category.items, item._id];
+        await category.save();
+        category = await Category.findById(category.parent);
+      }
+      // delete from all previous categories
+      while (temp) {
+        temp.items = temp.items.filter((it) => !it._id.equals(item._id));
+        await temp.save();
+        temp = await Category.findById(temp.parent);
+      }
+    }
+    item.title = req.body.title;
+    item.img = req.body.img;
+    item.rating = req.body.rating;
+    item.links = req.body.links;
+    item.info = req.body.info;
+    await item.save();
+    res.status(200).json({ message: "successfully updated" });
+  }
+);
+
 // delete specific item
 designRouter.delete(
   "/items/:id",

@@ -10,10 +10,14 @@ export interface ICategory {
 export interface ItemProps {
   title: string;
   img: string;
-  category: ICategory;
+  category: {
+    id: string;
+    name: string;
+  };
   info: InfoProps[];
   links: string[];
   id: string;
+  rating: number;
 }
 
 export interface InfoProps {

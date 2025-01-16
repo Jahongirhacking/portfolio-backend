@@ -7,7 +7,7 @@ const NotFound = ({ subTitle }: { subTitle: string }) => {
             status="404"
             title="404"
             subTitle={subTitle}
-            extra={<Link to={'/admin/categories'}>Orqaga</Link>}
+            extra={<Link to={'/admin/view/categories'}>Orqaga</Link>}
         />
     )
 }

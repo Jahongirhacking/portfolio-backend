@@ -1,13 +1,11 @@
-import "express-async-errors";
-import { unknownEndpoint, errorHandler } from "./utils/middleware";
-import { Application } from "express";
-import { mainRouter } from "./controllers/v1";
-import express from "express";
-import path from "path";
-import mongoose from "mongoose";
-import { MONGO_DB_URI } from "./utils/config";
 import cors from "cors";
+import express, { Application } from "express";
+import "express-async-errors";
+import mongoose from "mongoose";
 import authRouter from "./controllers/auth";
+import { mainRouter } from "./controllers/v1";
+import { MONGO_DB_URI } from "./utils/config";
+import { errorHandler, unknownEndpoint } from "./utils/middleware";
 
 const app: Application = express();
 
@@ -22,9 +20,8 @@ mongoose
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(path.join(__dirname, ".."), "index.html"));
-});
+app.use(express.static("dist"));
+
 app.use("/api/v1", mainRouter);
 app.use("/api/auth", authRouter);
 

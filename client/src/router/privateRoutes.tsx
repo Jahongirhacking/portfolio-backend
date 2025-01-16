@@ -3,8 +3,10 @@ import AdminLayout from "../pages/admin";
 import AddCategory from "../pages/admin/Add/Category";
 import AddItem from "../pages/admin/Add/Item";
 import AddSubCategory from "../pages/admin/Add/Subcategory";
-import Categories from "../pages/admin/Categories";
+import Categories from "../pages/admin/View/Categories";
 import ViewCategory from "../pages/admin/View/Category";
+import ViewItems from "../pages/admin/View/Items";
+import ViewItemDetails from "../pages/admin/View/Items/Details";
 import ViewSubCategory from "../pages/admin/View/Subcategory";
 
 export interface IRoute {
@@ -19,7 +21,7 @@ export default [
     element: <AdminLayout />,
     children: [
       {
-        path: '/admin/categories',
+        path: '/admin/view/categories',
         element: <Categories />
       },
       {
@@ -33,6 +35,14 @@ export default [
       {
         path: '/admin/add/item',
         element: <AddItem />
+      },
+      {
+        path: '/admin/view/items',
+        element: <ViewItems />
+      },
+      {
+        path: '/admin/view/items/:itemId',
+        element: <ViewItemDetails />
       },
       {
         path: '/admin/view/:category',

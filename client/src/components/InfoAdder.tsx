@@ -4,27 +4,31 @@ import { Dispatch, SetStateAction } from "react"
 import { InfoProps } from "../types"
 import AddImageUrl from "./AddImageUrl"
 
-const InfoAdder = ({ info, setInfo }: { info: InfoProps[], setInfo: Dispatch<SetStateAction<InfoProps[]>> }) => {
+const InfoAdder = ({ info, setInfo, disabled = false }: { info: InfoProps[], setInfo: Dispatch<SetStateAction<InfoProps[]>>, disabled?: boolean }) => {
     return (
         <Flex vertical gap={8}>
             <Typography.Title level={5}>Ma'lumotlar</Typography.Title>
-            <Button
+
+            {!disabled && (<Button
                 onClick={() => {
                     setInfo(prevInfo => [...prevInfo, { img: '', description: '' }])
                 }}
                 icon={<PaperClipOutlined />}
             >
                 Ma'lumot qo'shish
-            </Button>
+            </Button>)}
+
             {
                 info.map((i, index) => (
-                    <Flex vertical className="info-form-item">
+                    <Flex vertical className="info-form-item" key={index}>
                         <Flex vertical gap={5}>
                             <Form.Item
                                 label="Ma'lumot matni"
                                 required
                             >
                                 <Input.TextArea
+                                    disabled={disabled}
+                                    value={i.description}
                                     onChange={({ target: { value } }) => {
                                         setInfo(prevInfo => [
                                             ...prevInfo.slice(0, index),
@@ -44,16 +48,17 @@ const InfoAdder = ({ info, setInfo }: { info: InfoProps[], setInfo: Dispatch<Set
                                         ...prevInfo.slice(index + 1)
                                     ])
                                 }}
+                                disabled={disabled}
                             />
                         </Flex>
-                        <Button
+                        {!disabled && (<Button
                             type="primary"
                             danger
                             icon={<DeleteOutlined style={{ color: '#fff' }} />}
                             onClick={() => {
                                 setInfo(prevInfo => [...prevInfo.slice(0, index), ...prevInfo.slice(index + 1)])
                             }}
-                        />
+                        />)}
                     </Flex>
                 ))
             }

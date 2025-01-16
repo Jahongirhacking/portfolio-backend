@@ -17,11 +17,11 @@
     padding-bottom: 50px;
 
     & > .ant-flex > * {
-      padding: 10px;
+      padding: 15px;
     }
 
     .admin-header {
-      height: 40px;
+      height: 50px;
       background: #eee;
     }
 
@@ -31,43 +31,6 @@
 
     .admin-footer {
       height: 40px;
-    }
-  }
-}
-
-.view-page {
-  .banner {
-    width: 100%;
-    padding: 40px 20px;
-    text-align: center;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 10px;
-
-    .ant-typography {
-      width: auto;
-      margin: auto;
-      padding: 10px;
-      backdrop-filter: blur(5px);
-      background-color: #00000044;
-      color: #fff;
-    }
-  }
-
-  .category-card {
-    cursor: pointer;
-
-    .ant-card-body {
-      padding: 8px 5px;
-    }
-  }
-
-  .item-card {
-    cursor: pointer;
-
-    .ant-card-body {
-      padding: 8px 5px;
     }
   }
 }

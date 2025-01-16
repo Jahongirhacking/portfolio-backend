@@ -1,14 +1,17 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Divider, Flex, Form, Input, message, Select, Typography } from "antd";
+import { useForm } from "antd/es/form/Form";
 import axios from "axios";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import AddImageUrl from "../../../../components/AddImageUrl";
 import InfoAdder from "../../../../components/InfoAdder";
 import LinksAdder from "../../../../components/LinksAdder";
-import { RootState } from "../../../../store/store";
+import { fetchCategories } from "../../../../store/slices/categorySlice";
+import { AppDispatch, RootState } from "../../../../store/store";
 import { ICategory, InfoProps } from "../../../../types";
+import { getSubCategories } from "../../../../utils/categoryUtil";
 import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
 
 const AddItem = () => {
@@ -19,34 +22,42 @@ const AddItem = () => {
     const [category, setCategory] = useState('');
     const [links, setLinks] = useState<string[]>([]);
     const [info, setInfo] = useState<InfoProps[]>([]);
+    const [currentCategory, setCurrentCategory] = useState<ICategory | null>(null);
+    const [form] = useForm();
+    const dispatch: AppDispatch = useDispatch();
 
-    const getSubCategories = (categories: ICategory[]): ICategory[] => {
-        const subcategories: ICategory[] = [];
-        const queue: ICategory[] = [...categories];
+    useEffect(() => {
+        const queue = [...categories];
         while (queue.length) {
-            const temp = queue.shift() as ICategory;
-            if (!temp?.categories || !temp?.categories.length) {
-                subcategories.push({ ...temp });
-                continue;
+            const temp = queue.shift();
+            if (temp?.name === categoryName) {
+                setCurrentCategory(temp);
+                return;
             }
-            for (const category of temp.categories) {
-                queue.push(category);
-            }
+            if (!temp) continue;
+            for (const c of temp!.categories) queue.push(c);
         }
-        return [...subcategories];
-    }
-
-    const currentCategory = categories.find((c) => c.name === categoryName);
+    }, [categories, categoryName])
 
     const options = getSubCategories(currentCategory ? [currentCategory] : categories).map((c) => ({
         label: c?.name?.toUpperCase(),
         value: c?.name
     })) ?? []
 
+    const clearInputs = () => {
+        form.resetFields();
+        setImg('');
+        setCategory('');
+        setLinks([]);
+        setInfo([]);
+    }
+
     const handleSubmit = async ({ title, rating }: { title: string, rating: string, }) => {
         try {
             await axios.post(`${API_MAIN_URL}/${category}/items`, { title, rating, img, links, info }, AUTHORIZATION_HEADER)
-            message.success("Muvaffaqiyatli yuborildi!")
+            dispatch(fetchCategories());
+            message.success("Muvaffaqiyatli yuborildi!");
+            clearInputs();
         } catch (err) {
             console.error(err);
             message.error("Xatolik")
@@ -59,6 +70,7 @@ const AddItem = () => {
                 name="add-item-form"
                 layout="vertical"
                 onFinish={handleSubmit}
+                form={form}
             >
                 <Flex align="center" justify="space-between">
                     <Typography.Title level={4}>
@@ -73,7 +85,7 @@ const AddItem = () => {
                         { required: true, message: "sarlavha kiriting" }
                     ]}
                 >
-                    <Input />
+                    <Input autoComplete="off" />
                 </Form.Item>
                 <Form.Item
                     label={'Kategoriya'}
@@ -93,7 +105,7 @@ const AddItem = () => {
                         { required: true, message: "reyting kiriting" }
                     ]}
                 >
-                    <Input type="number" max={10} min={0} placeholder="0...10" />
+                    <Input type="number" max={5} min={0} placeholder="0...5" />
                 </Form.Item>
                 <Divider />
                 <InfoAdder info={info} setInfo={setInfo} />

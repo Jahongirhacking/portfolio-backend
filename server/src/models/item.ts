@@ -29,6 +29,8 @@ const itemSchema = new mongoose.Schema<ItemProps>({
   rating: {
     type: Number,
     required: true,
+    min: 0,
+    max: 5,
   },
   links: [String],
 });

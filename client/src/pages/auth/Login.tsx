@@ -1,17 +1,17 @@
 import { Button, Card, Flex, Form, Input, message } from "antd";
-import './style.scss';
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+import { setAuthenticated } from "../../store/slices/adminSlice";
+import { RootState } from "../../store/store";
 import { API_BASE_URL } from "../../utils/config";
 import { localStorageNames, setLocalStorage } from "../../utils/storageUtils";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { setAuthenticated } from "../../store/slices/adminSlice";
+import './style.scss';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const ADMIN_URL = '/admin/categories';
+    const ADMIN_URL = '/admin/view/categories';
     const isAuthenticated = useSelector((store: RootState) => store.admin.isAuthenticated)
 
     const handleSubmit = async ({ username, password }: { username: string, password: string }) => {
@@ -48,7 +48,7 @@ const LoginPage = () => {
                                 { required: true, message: 'username kiriting' }
                             ]}
                         >
-                            <Input />
+                            <Input autoComplete="off" />
                         </Form.Item>
                         <Form.Item
                             label='Parol'
