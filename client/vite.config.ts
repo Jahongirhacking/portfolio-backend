@@ -11,6 +11,6 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../server/dist",
+    outDir: "../server/view",
   },
 });
