@@ -31,7 +31,7 @@ const Categories = () => {
             <Flex gap={12} wrap>
                 {
                     categories.length
-                        ? categories.map((c) => <CategoryCard category={c} onView={() => { navigate(`/admin/view/${c.name}`) }} />)
+                        ? categories.map((c) => <CategoryCard key={c.id} category={c} onView={() => { navigate(`/admin/view/${c.name}`) }} />)
                         : <Empty description={"Kategoriyalar qo'shilmagan"} style={{ margin: 'auto' }} />
                 }
             </Flex>
@@ -43,7 +43,7 @@ const Categories = () => {
             <Flex gap={12} wrap>
                 {
                     items.length
-                        ? items.map((i) => <ItemCard item={i} onView={() => { navigate(`/admin/view/item/${i.id}`) }} />)
+                        ? items.map((i) => <ItemCard key={i.id} item={i} onView={() => { navigate(`/admin/view/items/${i.id}`) }} />)
                         : <Empty description={"Loyihalar qo'shilmagan"} style={{ margin: 'auto' }} />
                 }
             </Flex>

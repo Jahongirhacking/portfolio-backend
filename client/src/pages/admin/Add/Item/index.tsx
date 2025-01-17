@@ -12,7 +12,8 @@ import { fetchCategories } from "../../../../store/slices/categorySlice";
 import { AppDispatch, RootState } from "../../../../store/store";
 import { ICategory, InfoProps } from "../../../../types";
 import { getSubCategories } from "../../../../utils/categoryUtil";
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
+import { API_MAIN_URL } from "../../../../utils/config";
+import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils";
 
 const AddItem = () => {
     const categories = useSelector((store: RootState) => store.category.categories);
@@ -54,7 +55,11 @@ const AddItem = () => {
 
     const handleSubmit = async ({ title, rating }: { title: string, rating: string, }) => {
         try {
-            await axios.post(`${API_MAIN_URL}/${category}/items`, { title, rating, img, links, info }, AUTHORIZATION_HEADER)
+            await axios.post(`${API_MAIN_URL}/${category}/items`, { title, rating, img, links, info }, {
+                headers: {
+                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                },
+            })
             dispatch(fetchCategories());
             message.success("Muvaffaqiyatli yuborildi!");
             clearInputs();

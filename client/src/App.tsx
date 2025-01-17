@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import publicRoutes from './router/publicRoutes';
-import privateRoutes from './router/privateRoutes';
-import './style.scss'
 import { useSelector } from 'react-redux';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
+import privateRoutes from './router/privateRoutes';
+import publicRoutes from './router/publicRoutes';
 import { RootState } from './store/store';
+import './style.scss';
 
 const App = () => {
   const isAuthenticated = useSelector((store: RootState) => store.admin.isAuthenticated); // Replace with your auth logic

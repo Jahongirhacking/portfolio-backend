@@ -24,3 +24,23 @@ export interface InfoProps {
   img: string;
   description: string;
 }
+
+export interface IProfile {
+  id?: string;
+  name?: string;
+  username?: string;
+  background_img?: string;
+  short_info?: string;
+  profile_img?: string;
+  bio?: string;
+  link?: string;
+  services?: {
+    icon?: string;
+    name?: string;
+    description?: string;
+  }[];
+  skills?: {
+    name?: string;
+    percent?: number;
+  }[];
+}

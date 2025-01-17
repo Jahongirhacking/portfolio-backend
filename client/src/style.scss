@@ -5,17 +5,16 @@
 }
 
 .info-form-item {
-  background-color: #00e0d556;
+  background-color: #d3d3d356;
   padding: 10px;
   border-radius: 5px;
 }
 
 .ant-image:has(.added-img) {
-  width: 80px;
-  margin-top: 10px;
+  width: 50px;
 
   .added-img {
-    border-radius: 50%;
+    border-radius: 6px;
   }
 }
 
@@ -36,6 +35,10 @@
     background-color: #00000044;
     color: #fff;
   }
+}
+
+.main.banner {
+  padding: 120px 0;
 }
 
 .category-card {

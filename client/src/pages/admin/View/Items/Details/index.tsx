@@ -12,7 +12,8 @@ import { fetchCategories } from "../../../../../store/slices/categorySlice";
 import { AppDispatch, RootState } from "../../../../../store/store";
 import { InfoProps, ItemProps } from "../../../../../types";
 import { getSubCategories } from "../../../../../utils/categoryUtil";
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../../utils/config";
+import { API_MAIN_URL } from "../../../../../utils/config";
+import { getLocalStorage, localStorageNames } from "../../../../../utils/storageUtils";
 
 const ViewItemDetails = () => {
     const params = useParams();
@@ -62,7 +63,11 @@ const ViewItemDetails = () => {
                 info,
                 links,
                 rating
-            }, AUTHORIZATION_HEADER);
+            }, {
+                headers: {
+                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                },
+            });
             message.success("Muvaffaqiyatli o'zgartirldi");
             onSuccess();
         } catch (err) {
@@ -80,7 +85,7 @@ const ViewItemDetails = () => {
             </Flex>
             <Flex gap={8}>
                 <Typography.Text>O'zgartirish</Typography.Text>
-                <Switch value={!disabled} onChange={(value) => setDisabled(!value)} />
+                <Switch value={!disabled} onChange={() => setDisabled(prev => !prev)} />
             </Flex>
             <Form
                 name="add-item-form"

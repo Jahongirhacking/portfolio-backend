@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "cd ./server && rm -rf dist && cd ../client && npm i && npm run build && cd ../server && npm start"
+    "start": "cd ./server && rm -rf dist && cd ../client && npm i && npm run build && cd ../server && npm i && npm start"
   },
   "keywords": [],
   "author": "",

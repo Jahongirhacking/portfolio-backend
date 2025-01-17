@@ -7,6 +7,7 @@ import Categories from "../pages/admin/View/Categories";
 import ViewCategory from "../pages/admin/View/Category";
 import ViewItems from "../pages/admin/View/Items";
 import ViewItemDetails from "../pages/admin/View/Items/Details";
+import ViewProfile from "../pages/admin/View/Profile";
 import ViewSubCategory from "../pages/admin/View/Subcategory";
 
 export interface IRoute {
@@ -35,6 +36,10 @@ export default [
       {
         path: '/admin/add/item',
         element: <AddItem />
+      },
+      {
+        path: '/admin/view/profile',
+        element: <ViewProfile />
       },
       {
         path: '/admin/view/items',

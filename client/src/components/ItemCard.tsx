@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import { fetchCategories } from '../store/slices/categorySlice';
 import { AppDispatch } from '../store/store';
 import { ItemProps } from '../types';
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from '../utils/config';
+import { API_MAIN_URL } from '../utils/config';
+import { getLocalStorage, localStorageNames } from '../utils/storageUtils';
 
 const ItemCard = ({ item, onView }: { item: ItemProps, onView: () => void }) => {
     const dispatch: AppDispatch = useDispatch();
@@ -13,7 +14,11 @@ const ItemCard = ({ item, onView }: { item: ItemProps, onView: () => void }) => 
     const onDelete = async () => {
         try {
             if (window.confirm(`${item.title.toUpperCase()} loyihasini o'chirmoqchimisiz. Ichidagi barcha elementlar o'chib ketadi`)) {
-                await axios.delete(`${API_MAIN_URL}/items/${item.id}`, AUTHORIZATION_HEADER);
+                await axios.delete(`${API_MAIN_URL}/items/${item.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                    },
+                });
                 dispatch(fetchCategories());
                 message.success("Muvaffaqiyatli o'chirildi");
             }
@@ -37,11 +42,11 @@ const ItemCard = ({ item, onView }: { item: ItemProps, onView: () => void }) => 
                 <Flex className="banner" style={{ backgroundImage: `url(${item.img})` }} onClick={onView}>
                     <Typography.Title level={5}>{item.title?.toUpperCase()}</Typography.Title>
                 </Flex>
-                <Flex justify='space-between'>
+                <Flex justify='space-between' gap={10}>
                     <Typography.Text>Kategoriya:</Typography.Text>
                     <Typography.Text strong>{item?.category?.name}</Typography.Text>
                 </Flex>
-                <Flex justify='space-between'>
+                <Flex justify='space-between' gap={10}>
                     <Typography.Text>Reyting:</Typography.Text>
                     <Rate value={Number(item.rating)} disabled />
                 </Flex>

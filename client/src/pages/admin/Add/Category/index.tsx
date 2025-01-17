@@ -7,7 +7,8 @@ import { useDispatch } from "react-redux";
 import AddImageUrl from "../../../../components/AddImageUrl";
 import { fetchCategories } from "../../../../store/slices/categorySlice";
 import { AppDispatch } from "../../../../store/store";
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
+import { API_MAIN_URL } from "../../../../utils/config";
+import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils";
 
 const AddCategory = () => {
     const [form] = useForm();
@@ -21,7 +22,11 @@ const AddCategory = () => {
 
     const handleAddCategory = async (values: { name: string }) => {
         try {
-            await axios.post(`${API_MAIN_URL}/categories`, { ...values, img }, AUTHORIZATION_HEADER);
+            await axios.post(`${API_MAIN_URL}/categories`, { ...values, img }, {
+                headers: {
+                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                },
+            });
             dispatch(fetchCategories());
             message.success("Muvaffaqiyatli qo'shildi");
             clearInputs();

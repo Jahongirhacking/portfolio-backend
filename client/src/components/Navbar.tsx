@@ -1,14 +1,15 @@
-import { HomeOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { HomeOutlined, LogoutOutlined, PlusCircleOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
 import { Button, Flex, Menu, MenuProps } from 'antd';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchCategories } from '../store/slices/categorySlice';
 import { AppDispatch, RootState } from '../store/store';
+import { localStorageNames } from '../utils/storageUtils';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const Navbar = () => {
+const Navbar = (props: React.HTMLAttributes<HTMLDivElement>) => {
     const categories = useSelector((store: RootState) => store.category.categories);
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
@@ -20,17 +21,17 @@ const Navbar = () => {
     const navbarItems: MenuItem[] = [
         {
             key: 'category',
-            label: 'Kategoriyalar',
-            icon: <HomeOutlined />,
+            label: <Link to={'/admin/view/categories'}>Kategoriyalar</Link>,
+            icon: <Link to={'/admin/view/categories'}><HomeOutlined /></Link>,
             children: [
                 ...categories.map(c => ({
                     key: c.id,
-                    label: c.name.toUpperCase(),
+                    label: <Link to={`/admin/view/${c.name}`}>{c.name.toUpperCase()}</Link>,
                     icon: <img src={c.img} width={50} onClick={() => { navigate(`/admin/view/${c.name}`) }} />,
                     children: [
                         ...c.categories.map(sc => ({
                             key: sc.id,
-                            label: sc.name.toUpperCase(),
+                            label: <Link to={`/admin/view/${c.name}/${sc.name}`}>{sc.name.toUpperCase()}</Link>,
                             icon: <img src={sc.img} width={50} onClick={() => { navigate(`/admin/view/${c.name}/${sc.name}`) }} />
                         })),
                         {
@@ -64,10 +65,25 @@ const Navbar = () => {
                     ),
                 }
             ]
+        },
+        {
+            key: 'profile',
+            label: <Link to={'/admin/view/profile'}>Profil</Link>,
+            icon: <UserOutlined />
+        },
+        {
+            key: 'live',
+            label: <a href={'https://tursunaliyev-portfolio.netlify.app/'}>Live</a>,
+            icon: <WifiOutlined />
+        },
+        {
+            key: 'exit',
+            label: <Link to={'/'} onClick={() => { localStorage.removeItem(localStorageNames.token); window.location.reload() }}>Chiqish</Link>,
+            icon: <LogoutOutlined />
         }
     ]
     return (
-        <Flex className='navbar' vertical>
+        <Flex vertical {...props}>
             <Menu
                 items={navbarItems}
                 mode='inline'

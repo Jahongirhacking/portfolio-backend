@@ -5,7 +5,8 @@ import { useDispatch } from "react-redux"
 import { fetchCategories } from "../store/slices/categorySlice"
 import { AppDispatch } from "../store/store"
 import { ICategory } from "../types"
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../utils/config"
+import { API_MAIN_URL } from "../utils/config"
+import { getLocalStorage, localStorageNames } from "../utils/storageUtils"
 
 const CategoryCard = ({ category, onView }: { category: ICategory, onView: () => void }) => {
     const dispatch: AppDispatch = useDispatch();
@@ -13,7 +14,11 @@ const CategoryCard = ({ category, onView }: { category: ICategory, onView: () =>
     const onDelete = async () => {
         try {
             if (window.confirm(`${category.name.toUpperCase()} kategoriyasini o'chirmoqchimisiz. Ichidagi barcha elementlar o'chib ketadi`)) {
-                await axios.delete(`${API_MAIN_URL}/category/${category.id}`, AUTHORIZATION_HEADER);
+                await axios.delete(`${API_MAIN_URL}/category/${category.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                    },
+                });
                 dispatch(fetchCategories());
                 message.success("Muvaffaqiyatli o'chirildi")
             }
@@ -37,7 +42,15 @@ const CategoryCard = ({ category, onView }: { category: ICategory, onView: () =>
                 <Flex className="banner" style={{ backgroundImage: `url(${category.img})` }} onClick={onView}>
                     <Typography.Title level={5}>{category.name?.toUpperCase()}</Typography.Title>
                 </Flex>
-                <Flex justify='space-between'>
+                {
+                    !category.parent && (
+                        <Flex justify='space-between' gap={10}>
+                            <Typography.Text>Subkategoriya:</Typography.Text>
+                            <Typography.Text strong>{category.categories.length}</Typography.Text>
+                        </Flex>
+                    )
+                }
+                <Flex justify='space-between' gap={10}>
                     <Typography.Text>Loyiha:</Typography.Text>
                     <Typography.Text strong>{category.items.length}</Typography.Text>
                 </Flex>

@@ -9,7 +9,8 @@ import AddImageUrl from "../../../../components/AddImageUrl";
 import NotFound from "../../../../components/NotFound";
 import { fetchCategories } from "../../../../store/slices/categorySlice";
 import { AppDispatch, RootState } from "../../../../store/store";
-import { API_MAIN_URL, AUTHORIZATION_HEADER } from "../../../../utils/config";
+import { API_MAIN_URL } from "../../../../utils/config";
+import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils";
 
 const AddSubCategory = () => {
     const { category } = useParams();
@@ -25,7 +26,11 @@ const AddSubCategory = () => {
 
     const handleAddCategory = async (values: { name: string }) => {
         try {
-            await axios.post(`${API_MAIN_URL}/${category}/categories`, { ...values, img }, AUTHORIZATION_HEADER);
+            await axios.post(`${API_MAIN_URL}/${category}/categories`, { ...values, img }, {
+                headers: {
+                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                },
+            });
             dispatch(fetchCategories());
             message.success("Muvaffaqiyatli qo'shildi");
             clearInputs();

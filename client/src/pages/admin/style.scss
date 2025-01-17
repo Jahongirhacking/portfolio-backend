@@ -4,8 +4,18 @@
   width: 100%;
 
   .navbar {
-    width: 300px;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 400px;
     background: #ccc;
+    transition: 0.4s ease;
+
+    &.inactive {
+      width: 0;
+      overflow: hidden;
+    }
   }
 
   .admin-main {
@@ -17,16 +27,28 @@
     padding-bottom: 50px;
 
     & > .ant-flex > * {
-      padding: 15px;
+      padding: 25px;
     }
 
     .admin-header {
       height: 50px;
       background: #eee;
+      align-items: center;
     }
 
     .admin-content {
       height: 100%;
+
+      .ant-card {
+        flex: 1;
+        min-width: min(100%, 200px);
+        max-width: min(100%, 400px);
+        background-color: #e4e4e4;
+
+        &-actions {
+          background-color: #004133;
+        }
+      }
     }
 
     .admin-footer {

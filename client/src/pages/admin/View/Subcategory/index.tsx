@@ -1,14 +1,17 @@
-import { PlusCircleOutlined } from "@ant-design/icons"
-import { Button, Empty, Flex, Typography } from "antd"
+import { PlusCircleOutlined, SaveOutlined } from "@ant-design/icons"
+import { Button, Divider, Empty, Flex, Form, Input, message, Switch, Typography } from "antd"
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
+import AddImageUrl from "../../../../components/AddImageUrl"
 import ItemCard from "../../../../components/ItemCard"
 import NotFound from "../../../../components/NotFound"
-import { RootState } from "../../../../store/store"
+import { fetchCategories } from "../../../../store/slices/categorySlice"
+import { AppDispatch, RootState } from "../../../../store/store"
 import { ItemProps } from "../../../../types"
 import { API_MAIN_URL } from "../../../../utils/config"
+import { getLocalStorage, localStorageNames } from "../../../../utils/storageUtils"
 
 const ViewSubCategory = () => {
     const { category, subcategory } = useParams();
@@ -16,21 +19,70 @@ const ViewSubCategory = () => {
     const currentCategory = categories.find((c) => c.name === category)?.categories.find((c) => c.name === subcategory);
     const [items, setItems] = useState<ItemProps[]>([]);
     const navigate = useNavigate();
+    const [name, setName] = useState('');
+    const [img, setImg] = useState('');
+    const [disabled, setDisabled] = useState(true);
+    const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        if (categories.length) {
-            (async () => {
-                setItems((await axios.get(`${API_MAIN_URL}/${subcategory}/items`)).data)
-            })();
+        (async () => {
+            if (currentCategory) {
+                setImg(currentCategory.img);
+                setName(currentCategory.name);
+            }
+            if (categories.length) {
+                setItems((await axios.get(`${API_MAIN_URL}/${subcategory}/items`)).data);
+            };
+        })()
+    }, [categories, subcategory, currentCategory]);
+
+    const handleChange = async () => {
+        try {
+            await axios.put(`${API_MAIN_URL}/category/${currentCategory?.id}`, { name, img }, {
+                headers: {
+                    Authorization: `Bearer ${getLocalStorage(localStorageNames.token)}`,
+                },
+            });
+            dispatch(fetchCategories());
+            setDisabled(true);
+            navigate(`/admin/view/${category}/${name}`);
+            message.success("Muvaffaqiyatli o'zgartirildi");
+        } catch (err) {
+            message.error("O'zgartirishda xatolik")
+            console.error(err);
         }
-    }, [categories, subcategory])
+    }
 
     if (!currentCategory) return <NotFound subTitle="Kechirasiz kategoriya topilmadi" />
 
     return (
         <Flex vertical gap={15}>
-            <Flex gap={10} justify='space-between' align="center">
-                <Typography.Title level={4} style={{ margin: 0 }}>{`${category?.toUpperCase()} > ${subcategory?.toUpperCase()}`}</Typography.Title>
+            <Flex className="main banner" style={{ backgroundImage: `url(${currentCategory.img})` }}>
+                <Typography.Title level={3}>{currentCategory.name.toUpperCase()}</Typography.Title>
+            </Flex>
+            <Form
+                name="subcategory-form"
+                layout="horizontal"
+                onFinish={handleChange}
+            >
+                <Flex gap={12} justify="space-between" style={{ marginBottom: 15 }}>
+                    <Flex gap={8}>
+                        <Typography.Text>O'zgartirish</Typography.Text>
+                        <Switch value={!disabled} onChange={() => setDisabled(prev => !prev)} />
+                    </Flex>
+                    <Button htmlType="submit" type="primary" icon={<SaveOutlined />} disabled={disabled}>Saqlash</Button>
+                </Flex>
+                <Form.Item
+                    label="Subkategoriya nomi"
+                    required
+                >
+                    <Input value={name} onChange={({ target: { value } }) => { setName(value) }} disabled={disabled} />
+                </Form.Item>
+                <AddImageUrl label="Subkategoriya rasm url" img={img} setImg={setImg} disabled={disabled} />
+            </Form>
+            <Divider style={{ margin: '10px 0' }} />
+            <Flex gap={10} justify='space-between' align="center" wrap>
+                <Typography.Title level={5} style={{ margin: 0 }}>{`${category?.toUpperCase()} > ${subcategory?.toUpperCase()}`}</Typography.Title>
                 <Button
                     type="primary"
                     className="add-item-btn"

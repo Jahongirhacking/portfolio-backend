@@ -58,6 +58,7 @@ const InfoAdder = ({ info, setInfo, disabled = false }: { info: InfoProps[], set
                             onClick={() => {
                                 setInfo(prevInfo => [...prevInfo.slice(0, index), ...prevInfo.slice(index + 1)])
                             }}
+                            style={{ marginLeft: 'auto' }}
                         />)}
                     </Flex>
                 ))

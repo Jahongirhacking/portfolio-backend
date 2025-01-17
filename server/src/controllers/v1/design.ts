@@ -31,12 +31,35 @@ designRouter.post(
     }
     const { name, img, categories, items } = req.body;
     await new Category({
-      name: name.split(" ").join("_").toLowerCase(),
+      name,
       img,
       categories,
       items,
     }).save();
     res.status(204).json({ message: "success" });
+  }
+);
+
+designRouter.put(
+  "/category/:categoryId",
+  async (
+    req: Request<{ categoryId: string }, {}, { name: string; img: string }>,
+    res: Response
+  ) => {
+    if (!isAuthenticated(extractToken(req))) {
+      res.status(400).json({ error: "invalid token" });
+      return;
+    }
+    const { categoryId } = req.params;
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      res.status(404).json({ error: "no such category found" });
+      return;
+    }
+    category.name = req.body.name;
+    category.img = req.body.img;
+    await category.save();
+    res.status(200).json({ message: "successfully updated" });
   }
 );
 
@@ -132,7 +155,7 @@ designRouter.post(
 
     const category = await new Category({
       ...req.body,
-      name: req.body.name.split(" ").join("_").toLowerCase(),
+      name: req.body.name,
       parent: currentCategory._id,
     }).save();
 
@@ -215,7 +238,7 @@ designRouter.post(
 );
 
 designRouter.get("/items", async (req: Request, res: Response) => {
-  const items = await Item.find({});
+  const items = await Item.find({}).populate("category");
   res.status(200).json(items);
 });
 
